@@ -20,6 +20,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Random;
 
 import Skills.Paralysis;
@@ -240,7 +242,7 @@ public class GameScreen implements Screen {
 //        batch.end();
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.setColor(Color.GRAY);
         for (Ball ball : currentArea.balls) {
             shapeRenderer.circle(ball.position.x, ball.position.y, ball.radius);
         }
@@ -322,13 +324,15 @@ public class GameScreen implements Screen {
                 break;  // Teleport once, no need to check further collisions
             }
         }
-        Iterator<Pellet> iterator = currentArea.pellets.iterator();
+        ListIterator<Pellet> iterator = currentArea.pellets.listIterator();
         while (iterator.hasNext()) {
             Pellet pellet = iterator.next();
             float distance = player.position.dst(pellet.position);
 
             if (distance < player.radius + pellet.radius) {
-                iterator.remove();  // Удаление через итератор
+                iterator.remove();
+                // добавить новую пеллету
+                iterator.add(new Pellet(currentArea));
                 player.xp += currentArea.xpPerPellet;
                 checkLevel();
             }

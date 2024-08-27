@@ -32,7 +32,7 @@ public class Pellet {
                 break;
             case 5:
             case 6:
-                color = Color.YELLOW;
+                color = Color.FOREST;
                 break;
             case 9:
                 color = Color.PINK;

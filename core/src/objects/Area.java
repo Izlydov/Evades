@@ -18,7 +18,7 @@ public class Area {
     public ArrayList<Ball> balls = new ArrayList<>();
     public ArrayList<Pellet> pellets = new ArrayList<>();
     public Area() {
-        xpPerPellet = 10;
+        xpPerPellet = 30;
     }
     public Area(int numOfBalls, float radius, float speed){
         this.numOfBalls = numOfBalls;

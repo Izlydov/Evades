@@ -51,7 +51,6 @@ project(":desktop") {
 
     }
 }
-
 project(":android") {
     apply plugin: "com.android.application"
 
