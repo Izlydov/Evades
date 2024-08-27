@@ -6,6 +6,7 @@ public class Area {
     public int id;
     public String name;
     public int numOfBalls;
+    public int numOfSlowings;
     public int xpPerPellet;
     public float ballSpeed;
     public float ballRadius;

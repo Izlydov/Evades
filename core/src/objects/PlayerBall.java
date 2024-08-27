@@ -5,6 +5,9 @@ import static com.badlogic.gdx.math.MathUtils.random;
 import com.badlogic.gdx.math.Vector2;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
+
+import javax.swing.SpringLayout;
 
 public class PlayerBall {
     public float radius;
@@ -19,6 +22,7 @@ public class PlayerBall {
     public float mana;
     public float maxMana;
     public boolean isGod = false;
+    public boolean isSlow = false;
     public boolean isMouseOn = false;
     public boolean isMoving;
     public MoveInfo moveInfo;
@@ -26,6 +30,7 @@ public class PlayerBall {
     public int maxAreaReached;
     public int levelPoints;
     public float regen;
+
     public PlayerBall(Area currentArea){
         xp = 0;
         level = 0;
@@ -51,5 +56,4 @@ public class PlayerBall {
     public void toggleGodMode(){
         isGod = !isGod;
     }
-
 }

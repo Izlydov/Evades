@@ -1,5 +1,8 @@
 package game.gdx.screens;
 
+import static objects.BallType.DEFAULT;
+import static objects.BallType.SLOWING;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
@@ -19,8 +22,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.ListIterator;
 import java.util.Random;
 
@@ -181,10 +184,6 @@ public class GameScreen implements Screen {
         float mouseY = Gdx.input.getY();
 
         Vector3 mousePosition = myGdxGame.camera.unproject(new Vector3(mouseX, mouseY, 0));
-
-        if (!player.isGod){
-            checkCollisions();
-        }
         updatePlayer(mousePosition, delta);
         myGdxGame.camera.position.x = player.position.x;
         myGdxGame.camera.position.y = player.position.y;
@@ -242,13 +241,17 @@ public class GameScreen implements Screen {
 //        batch.end();
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.GRAY);
         for (Ball ball : currentArea.balls) {
+            shapeRenderer.setColor(ball.color);
             shapeRenderer.circle(ball.position.x, ball.position.y, ball.radius);
+            if (ball.ballType != DEFAULT){
+                drawBallAura(ball);
+            }
         }
 
         drawSkillAura(player.skill1);
         drawSkillAura(player.skill2);
+
 
         shapeRenderer.setColor(Color.BLUE);
         shapeRenderer.circle(player.position.x, player.position.y, player.radius);
@@ -256,6 +259,22 @@ public class GameScreen implements Screen {
 
         drawHotBar();
     }
+
+    private void drawBallAura(Ball ball) {
+        switch (ball.ballType){
+            case DEFAULT:
+                return;
+            case SLOWING:
+                shapeRenderer.setColor(new Color(1, 0, 0, 0.5f));
+                shapeRenderer.circle(ball.position.x, ball.position.y, 250);
+                break;
+            case DRAINING:
+                shapeRenderer.setColor(new Color(0, 0, 1, 0.5f));
+                shapeRenderer.circle(ball.position.x, ball.position.y, 250);
+                break;
+        }
+    }
+
     private void drawHotBar(){
         batch.begin();
         hotBarFont.setColor(Color.WHITE); // Цвет текста
@@ -292,7 +311,10 @@ public class GameScreen implements Screen {
             currentArea.balls.clear();
         }
         for(int i = 0; i < currentArea.numOfBalls; i++) {
-            currentArea.balls.add(new Ball(currentArea.ballRadius, currentArea.ballSpeed, currentArea));
+            currentArea.balls.add(new Ball(currentArea.ballRadius, currentArea.ballSpeed, DEFAULT, currentArea));
+        }
+        for(int i = 0; i < currentArea.numOfSlowings; i++) {
+            currentArea.balls.add(new Ball(20, currentArea.ballSpeed - 2, SLOWING, currentArea));
         }
         int pelletAmount = 20;
         currentArea.pellets.clear();
@@ -316,13 +338,21 @@ public class GameScreen implements Screen {
         }
     }
     private void checkCollisions() {
+        ArrayList<Float> slowingDistances = new ArrayList<Float>();
         for (Ball ball : currentArea.balls) {
             float distance = player.position.dst(ball.position);
-
+            if (ball.ballType == SLOWING){
+                slowingDistances.add(distance);
+            }
             if (distance < player.radius + ball.radius) {
                 teleportPlayerToStart();
                 break;  // Teleport once, no need to check further collisions
             }
+        }
+        if (!slowingDistances.isEmpty() && Collections.min(slowingDistances) - player.radius <= 250){
+            player.isSlow = true;
+        } else {
+            player.isSlow = false;
         }
         ListIterator<Pellet> iterator = currentArea.pellets.listIterator();
         while (iterator.hasNext()) {
@@ -358,6 +388,9 @@ public class GameScreen implements Screen {
         }
     }
     private void updatePlayer(Vector3 mPosition, float delta) {
+        if (!player.isGod){
+            checkCollisions();
+        }
         if (player.mana < player.maxMana) {
             player.mana += delta * player.regen;
         }
@@ -397,6 +430,9 @@ public class GameScreen implements Screen {
         }
         if (isShift){
             speed /= 2f;
+        }
+        if (player.isSlow){
+            speed = 0.7f * speed;
         }
         player.velocity.set(direction.scl(speed));
 

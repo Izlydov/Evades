@@ -7,7 +7,7 @@ public class Hero extends PlayerBall {
     public Skill skill2;
 
     public Hero(Area currentArea, String heroName) {
-        super(currentArea);  // Вызываем конструктор родительского класса
+        super(currentArea);
         this.name = heroName;
     }
     public void setSkill1(Skill skill1) {
