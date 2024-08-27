@@ -1,0 +1,83 @@
+{
+  "areas": [
+    {
+      "id": 1,
+      "name": "Area 1",
+      "numOfBalls": 10,
+      "ballSpeed": 5.0,
+      "ballRadius": 20.0,
+      "width": 4000,
+      "height": 600,
+      "safeZone": 400,
+      "winZone": 80,
+      "backZone": -23,
+      "xpPerPellet": 10,
+      "isWinArea": false
+    },
+    {
+      "id": 2,
+      "name": "Area 2",
+      "numOfBalls": 15,
+      "ballSpeed": 7,
+      "ballRadius": 25.0,
+      "width": 4000,
+      "height": 600,
+      "safeZone": 400,
+      "winZone": 80,
+      "backZone": 80,
+      "isWinArea": false
+    },
+    {
+      "id": 3,
+      "name": "Area 3",
+      "numOfBalls": 30,
+      "ballSpeed": 2.0,
+      "ballRadius": 15.0,
+      "width": 4000,
+      "height": 600,
+      "safeZone": 400,
+      "winZone": 80,
+      "backZone": 80,
+      "isWinArea": false
+    },
+    {
+      "id": 4,
+      "name": "Area 4",
+      "numOfBalls": 8,
+      "ballSpeed": 5.5,
+      "ballRadius": 40.0,
+      "width": 4000,
+      "height": 600,
+      "safeZone": 400,
+      "winZone": 80,
+      "backZone": 80,
+      "isWinArea": false
+    },
+    {
+      "id": 5,
+      "name": "Area 5",
+      "numOfBalls": 20,
+      "ballSpeed": 6.5,
+      "ballRadius": 24.0,
+      "width": 4000,
+      "height": 600,
+      "safeZone": 400,
+      "winZone": 80,
+      "backZone": 80,
+      "isWinArea": false
+    },
+    {
+      "id": 6,
+      "name": "Area 6",
+      "numOfBalls": 0,
+      "ballSpeed": 0,
+      "ballRadius": 0,
+      "width": 4000,
+      "height": 600,
+      "safeZone": 400,
+      "winZone": 80,
+      "backZone": 80,
+      "isWinArea": true
+    }
+  ]
+}
