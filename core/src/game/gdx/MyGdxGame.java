@@ -14,12 +14,14 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 
 import game.gdx.screens.GameScreen;
+import game.gdx.screens.MenuScreen;
 
 public class MyGdxGame extends Game {
 	private ShapeRenderer shapeRenderer;
 	public OrthographicCamera camera;
 	SpriteBatch batch;
 	GameScreen gameScreen;
+	MenuScreen menuScreen;
 
 
 
@@ -31,8 +33,9 @@ public class MyGdxGame extends Game {
 		camera.setToOrtho(false, GameSettings.SCREEN_WIDTH, GameSettings.SCREEN_HEIGHT);
 
 		gameScreen = new GameScreen(this);
+		menuScreen = new MenuScreen(this);
 		shapeRenderer = new ShapeRenderer();
-		setScreen(gameScreen);
+		setScreen(menuScreen);
 	}
 
 	@Override

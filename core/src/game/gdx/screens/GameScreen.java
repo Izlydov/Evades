@@ -78,6 +78,11 @@ public class GameScreen implements Screen {
         player.area = currentArea;
         initBalls();
 
+
+    }
+
+    @Override
+    public void show() {
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
@@ -164,11 +169,6 @@ public class GameScreen implements Screen {
             }
         });
         initBalls();
-    }
-
-    @Override
-    public void show() {
-
     }
 
     @Override
