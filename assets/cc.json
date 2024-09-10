@@ -1,6 +1,20 @@
 {
   "areas": [
     {
+      "id": 0,
+      "name": "Area 0",
+      "numOfBalls": 100,
+      "ballSpeed": 10.0,
+      "ballRadius": 20.0,
+      "width": 2000,
+      "height": 2000,
+      "safeZone": 200,
+      "winZone": 80,
+      "backZone": -23,
+      "xpPerPellet": 30,
+      "isWinArea": false
+    },
+    {
       "id": 1,
       "name": "Area 1",
       "numOfBalls": 10,
@@ -10,7 +24,7 @@
       "height": 600,
       "safeZone": 400,
       "winZone": 80,
-      "backZone": -23,
+      "backZone": 80,
       "xpPerPellet": 30,
       "isWinArea": false
     },

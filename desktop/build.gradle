@@ -42,7 +42,16 @@ tasks.register('dist', Jar) {
     }
     with jar
 }
-
+task fatJar(type: Jar) {
+    archiveBaseName = 'evades'
+    archiveVersion = '1.0'
+    manifest {
+        attributes 'Main-Class': 'game.gdx.DesktopLauncher'
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
 
 dist.dependsOn classes
 

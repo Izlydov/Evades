@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import game.gdx.GameSettings;
 import game.gdx.MyGdxGame;
 
 public class MenuScreen implements Screen {
@@ -38,23 +39,33 @@ public class MenuScreen implements Screen {
         skin = new Skin(Gdx.files.internal("uiskin.json")); // Replace with your skin file
 
         TextButton startButton = new TextButton("Start Game", skin);
+        TextButton quitButton = new TextButton("Quit", skin);
 
         startButton.setSize(200, 50);
         startButton.setPosition(Gdx.graphics.getWidth() / 2f - startButton.getWidth() / 2,
                 Gdx.graphics.getHeight() / 2f - startButton.getHeight() / 2);
+        quitButton.setSize(200, 50);
+        quitButton.setPosition(Gdx.graphics.getWidth() / 2f - startButton.getWidth() / 2,
+                Gdx.graphics.getHeight() / 2f - startButton.getHeight() / 2 - 70);
 
         startButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println("Button clicked! Start the game!");
                 myGdxGame.setScreen(gameScreen);
             }
         });
+        quitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
+            }
+        });
         stage.addActor(startButton);
+        stage.addActor(quitButton);
     }
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0, 1); // Black background color (can be changed)
+        Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1); // Black background color (can be changed)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // Update the stage (if you have a stage for UI elements like buttons)

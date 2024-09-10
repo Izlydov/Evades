@@ -1,11 +1,10 @@
 package objects;
 
-import static com.badlogic.gdx.math.MathUtils.random;
-
 import com.badlogic.gdx.math.Vector2;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.SpringLayout;
 
@@ -41,7 +40,8 @@ public class PlayerBall {
         maxAreaReached = 1;
         regen = 1;
 
-        float x = random.nextInt((int) radius, currentArea.safeZone - (int) radius);
+        Random random = new Random();
+        float x = random.nextInt(currentArea.safeZone - (int) radius - (int) radius) + (int) radius;
         float y = random.nextFloat() * (currentArea.height - radius * 2) + radius;
 
         this.position = new Vector2(x, y);

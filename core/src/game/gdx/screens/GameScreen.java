@@ -3,6 +3,7 @@ package game.gdx.screens;
 import static objects.BallType.DEFAULT;
 import static objects.BallType.SLOWING;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
@@ -13,6 +14,8 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+
 
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -35,6 +38,7 @@ import game.gdx.MyGdxGame;
 import objects.Area;
 import objects.Ball;
 import objects.Hero;
+import objects.HotBar;
 import objects.MoveInfo;
 import objects.Pellet;
 import Skills.Warp;
@@ -55,6 +59,10 @@ public class GameScreen implements Screen {
     boolean isShift;
     Vector2 lastDirection = null;
     BitmapFont hotBarFont;
+    public HotBar hotBar;
+    private GlyphLayout glyphLayout = new GlyphLayout();
+    public Texture warpTexture;
+    public Texture paralysisTexture;
 
 
     public GameScreen(MyGdxGame myGdxGame) {
@@ -63,8 +71,9 @@ public class GameScreen implements Screen {
         img = new Texture("ball.png");
         shapeRenderer = new ShapeRenderer();
         Array<Area> areas = AreaLoader.loadAllAreas();
-        currentArea = areas.get(0);
-
+        currentArea = areas.get(1);
+        warpTexture = new Texture("warp.png");
+        paralysisTexture = new Texture("paralysis.jpg");
         hotBarFont = new BitmapFont();
 
 
@@ -84,8 +93,52 @@ public class GameScreen implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(new InputAdapter() {
+
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+                float touchX = screenX;
+                float touchY = Gdx.graphics.getHeight() - screenY;
+                if (Gdx.app.getType() == Application.ApplicationType.Android || Gdx.app.getType() == Application.ApplicationType.iOS) {
+                    if (touchX >= hotBar.speedTextX && touchX <= hotBar.speedTextX + hotBar.speedTextWidth &&
+                            touchY >= hotBar.speedTextY - hotBar.speedTextHeight && touchY <= hotBar.speedTextY) {
+                        if (player.levelPoints > 0 && player.maxSpeed < 17) {
+                            player.levelPoints--;
+                            player.maxSpeed += 0.5;
+                            return true;
+                        }
+                    }
+
+                    // Проверка касания по области текста "Mana"
+                    if (touchX >= hotBar.manaTextX && touchX <= hotBar.manaTextX + hotBar.manaTextWidth &&
+                            touchY >= hotBar.manaTextY - hotBar.manaTextHeight && touchY <= hotBar.manaTextY) {
+                        if (player.levelPoints > 0 && player.maxMana < 300) {
+                            player.levelPoints--;
+                            player.maxMana += 5;
+                            return true;
+                        }
+                    }
+
+                    // Проверка касания по области текста "Regen"
+                    if (touchX >= hotBar.regenTextX && touchX <= hotBar.regenTextX + hotBar.regenTextWidth &&
+                            touchY >= hotBar.regenTextY - hotBar.regenTextHeight && touchY <= hotBar.regenTextY) {
+                        if (player.levelPoints > 0 && player.regen < 7) {
+                            player.levelPoints--;
+                            player.regen += 0.3f;
+                            return true;
+                        }
+                    }
+                    if (touchX >= hotBar.warpTextureX && touchX <= hotBar.warpTextureX + 100 &&
+                            touchY >= hotBar.warpTextureY && touchY <= hotBar.warpTextureY + 100) {
+                        player.useSkill1();
+                        return true;
+                    }
+
+                    if (touchX >= hotBar.paralysisTextureX && touchX <= hotBar.paralysisTextureX + 100 &&
+                            touchY >= hotBar.paralysisTextureY && touchY <= hotBar.paralysisTextureY + 100) {
+                        player.useSkill2();
+                        return true;
+                    }
+                }
                 player.toggleMovement();
                 return true;
             }
@@ -208,7 +261,11 @@ public class GameScreen implements Screen {
         shapeRenderer.rect(currentArea.safeZone, 0, currentArea.width - currentArea.safeZone * 2, currentArea.height);
 
         shapeRenderer.setColor(Color.YELLOW);
+        if (currentArea.id == 1){
+            shapeRenderer.setColor(Color.CYAN);
+        }
         shapeRenderer.rect(0, 0, currentArea.backZone, currentArea.height);
+        shapeRenderer.setColor(Color.YELLOW);
         shapeRenderer.rect(currentArea.width - currentArea.winZone, 0, currentArea.winZone, currentArea.height);
         shapeRenderer.end();
         int cellSize = 40;
@@ -277,26 +334,65 @@ public class GameScreen implements Screen {
 
     private void drawHotBar(){
         batch.begin();
+        float scaleFactor = 1;
+        if (Gdx.app.getType() == Application.ApplicationType.Android || Gdx.app.getType() == Application.ApplicationType.iOS) {
+            scaleFactor = Gdx.graphics.getWidth() / 800f;  // Подбираем базовое значение для ширины экрана
+            hotBarFont.getData().setScale(scaleFactor);
+        } else {
+            hotBarFont.getData().setScale(1f);
+        }
+
         hotBarFont.setColor(Color.WHITE); // Цвет текста
 
-        // Отображение уровня
         String levelText = "Level: " + player.level;
-        hotBarFont.draw(batch, levelText, 10, 50);
+        glyphLayout.setText(hotBarFont, levelText);
+        hotBarFont.draw(batch, levelText, 10 * scaleFactor, 50 * scaleFactor);
 
-        // Отображение скорости
+        float speedTextX = 10 * scaleFactor;
+        float speedTextY = 20 * scaleFactor;
         String speedText = "Speed: " + String.format("%.1f", player.maxSpeed);
-        hotBarFont.draw(batch, speedText, 10, 20);
+        glyphLayout.setText(hotBarFont, speedText);
+        float speedTextWidth = glyphLayout.width;
+        float speedTextHeight = glyphLayout.height;
+        hotBarFont.draw(batch, speedText, speedTextX, speedTextY);
 
+        float manaTextX = 110 * scaleFactor;
+        float manaTextY = 20 * scaleFactor;
         String mana = "Mana: " + (int) player.mana + " / " + (int) player.maxMana;
-        hotBarFont.draw(batch, mana, 110, 20);
+        glyphLayout.setText(hotBarFont, mana);
+        float manaTextWidth = glyphLayout.width;
+        float manaTextHeight = glyphLayout.height;
+        hotBarFont.draw(batch, mana, manaTextX, manaTextY);
 
+        float regenTextX = 220 * scaleFactor;
+        float regenTextY = 20 * scaleFactor;
         String regen = "Regen " + player.regen;
-        hotBarFont.draw(batch, regen, 220, 20);
+        glyphLayout.setText(hotBarFont, regen);
+        float regenTextWidth = glyphLayout.width;
+        float regenTextHeight = glyphLayout.height;
+        hotBarFont.draw(batch, regen, regenTextX, regenTextY);
 
 
         hotBarFont.setColor(Color.GOLD);
         String levelPointsText = "Points: " + player.levelPoints;
-        hotBarFont.draw(batch, levelPointsText, 80, 50);
+        glyphLayout.setText(hotBarFont, levelPointsText);
+        float levelPointsTextWidth = glyphLayout.width;
+        float levelPointsTextHeight = glyphLayout.height;
+        hotBarFont.draw(batch, levelPointsText, 80 * scaleFactor, 50 * scaleFactor);
+
+        if (Gdx.app.getType() == Application.ApplicationType.Android || Gdx.app.getType() == Application.ApplicationType.iOS) {
+            float warpTextureX = 300 * scaleFactor;
+            float warpTextureY = 2 * scaleFactor;
+            batch.draw(warpTexture, warpTextureX, warpTextureY, 100, 100);
+            float paralysisTextureX = 360 * scaleFactor;
+            float paralysisTextureY = 2 * scaleFactor;
+            batch.draw(paralysisTexture, paralysisTextureX, paralysisTextureY, 100, 100);
+            if (hotBar == null) {
+                hotBar = new HotBar(speedTextX, speedTextY, manaTextX, manaTextY, regenTextX, regenTextY, speedTextWidth, speedTextHeight, manaTextWidth, manaTextHeight, regenTextWidth, regenTextHeight, warpTextureX, warpTextureY, paralysisTextureX, paralysisTextureY);
+            }
+        }
+
+
         batch.end();
     }
     public void drawSkillAura(Skill skill) {
@@ -345,6 +441,10 @@ public class GameScreen implements Screen {
                 slowingDistances.add(distance);
             }
             if (distance < player.radius + ball.radius) {
+                if (currentArea.id == 0){
+                    teleportPlayerToEnd();
+                    break;
+                }
                 teleportPlayerToStart();
                 break;  // Teleport once, no need to check further collisions
             }

@@ -1,20 +1,19 @@
 package objects;
 
+
 import com.badlogic.gdx.math.Vector2;
 
 import com.badlogic.gdx.graphics.Color;
-import java.util.Random;
 
 public class Pellet {
     public int xp;
     public Color color;
     public Vector2 position;
-    Random random = new Random();
     public int radius = 10;
 
     public Pellet(Area currentArea){
-        float x = random.nextInt(currentArea.safeZone + (int) radius, currentArea.width - (int) radius - currentArea.safeZone);
-        float y = random.nextFloat() * (currentArea.height - radius * 2) + radius;
+        float x = (float) (Math.random() * (currentArea.width - 2 * currentArea.safeZone - 2 * radius)) + currentArea.safeZone + radius;
+        float y = (float) (Math.random() * (currentArea.height - radius * 2)) + radius;
 
         position = new Vector2(x, y);
 

@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 
-import java.util.Random;
+
 import java.util.TimerTask;
 
 import game.gdx.GameSettings;
@@ -16,19 +16,18 @@ public class Ball {
     private Vector2 originalVelocity;
     public BallType ballType;
     public Color color;
-
-    Random random = new Random();
     public float radius;
 
     public Ball(float radius, float maxVelocity, BallType ballType, Area currentArea) {
 
-        float vx = random.nextFloat(maxVelocity);
+
+        float vx = (float) (Math.random() * maxVelocity);
         float vy = maxVelocity - vx;
 
 
         this.radius = radius;
-        float x = random.nextInt(currentArea.safeZone + (int) radius, currentArea.width - (int) radius - currentArea.safeZone);
-        float y = random.nextFloat() * (currentArea.height - radius * 2) + radius;
+        float x = (float) (Math.random() * (currentArea.width - 2 * currentArea.safeZone - 2 * radius)) + currentArea.safeZone + radius;
+        float y = (float) (Math.random() * (currentArea.height - radius * 2)) + radius;
 
         this.position = new Vector2(x, y);
         this.velocity = new Vector2(vx, vy);
