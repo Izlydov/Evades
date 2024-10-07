@@ -13,7 +13,7 @@ public class Paralysis extends Skill{
     float range;
     float duration;
     public Paralysis(Hero hero) {
-        super("Paralysis", "Freezes enemies for 3 seconds", false, 5, 15, hero, true);
+        super("Paralysis", "Freezes enemies for 3 seconds", false, 1, 15, hero, true);
         duration = 2;
         range = 250;
     }

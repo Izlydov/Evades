@@ -17,12 +17,19 @@ public class Ball {
     public BallType ballType;
     public Color color;
     public float radius;
+    public Vector2 direction;
 
     public Ball(float radius, float maxVelocity, BallType ballType, Area currentArea) {
 
 
-        float vx = (float) (Math.random() * maxVelocity);
-        float vy = maxVelocity - vx;
+        float angle = (float) (Math.random() * 360);
+        float angleRadians = (float) Math.toRadians(angle);
+        float xx = (float) Math.cos(angleRadians);
+        float yy = (float) Math.sin(angleRadians);
+        direction = new Vector2(xx,yy);
+
+//        float vx = (float) (Math.random() * maxVelocity);
+//        float vy = maxVelocity - vx;
 
 
         this.radius = radius;
@@ -30,7 +37,9 @@ public class Ball {
         float y = (float) (Math.random() * (currentArea.height - radius * 2)) + radius;
 
         this.position = new Vector2(x, y);
-        this.velocity = new Vector2(vx, vy);
+//        this.velocity = new Vector2(vx, vy);
+        this.velocity = new Vector2();
+        velocity.set(direction.scl(maxVelocity));
         this.originalVelocity = new Vector2(velocity);
 
         this.ballType = ballType;
